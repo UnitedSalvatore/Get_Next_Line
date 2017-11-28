@@ -10,4 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "get_next_line.h"
+#include "libft.h"
 
+int get_next_line(const int fd, char **line)
+{
+	static t_list	*list;
+	t_list			*current;
+	if (fd < 0 || line == NULL || BUFF_SIZE < 1)
+		return (-1);
+
+	return (0);
+}

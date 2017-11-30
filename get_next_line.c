@@ -13,30 +13,36 @@
 #include "get_next_line.h"
 #include "libft.h"
 
-t_list	*get_elem(const int fd, t_list **list)
+static t_list_fd	*get_current_fd(const int fd, t_list **list)
 {
-	t_list			*current;
-	char			*buff[BUFF_SIZE + 1];
+	t_list_fd	*current;
 
 	current = *list;
 	while (current)
 	{
-		if (current->content_size == fd)
+		if (current->fd == fd)
 			return (current);
 		current = current->next;
 	}
-
-	if ((current = ft_lstnew()))
+	if ((current = malloc(sizeof(*current))) == NULL)
+		return (NULL);
+	current->fd = fd;
+	current->content = NULL;
+	current->next = *list;
+	*list = current;
+	return (current);
 }
 
-int		get_next_line(const int fd, char **line)
+int					get_next_line(const int fd, char **line)
 {
-	static t_list	*list;
-	t_list			*current;
+	static t_list_fd	*list;
+	t_list_fd			*current;
+	char				*buf[BUFF_SIZE + 1];
 
-	if (fd < 0 || line == NULL || BUFF_SIZE < 1)
+	if (fd < 0 || line == NULL || BUFF_SIZE < 1 || read(fd, buf, 0) < 0)
 		return (-1);
-
+	if ((current = get_current_fd(fd, &list)) == NULL)
+		return (-1);
 
 	return (0);
 }

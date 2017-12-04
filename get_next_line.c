@@ -21,7 +21,7 @@ static void			check_empty(const char fd, t_list_fd **list)
 	t_list_fd	*buf;
 
 	buf = NULL;
-	if ((*list)->fd = fd)
+	if ((*list)->fd == fd)
 	{
 		if (!((*list)->content) || *((*list)->content) == '\0')
 		{
@@ -32,15 +32,15 @@ static void			check_empty(const char fd, t_list_fd **list)
 	else
 	{
 		prev = *list;
-		buf = *list->next;
+		buf = (*list)->next;
 		while (buf)
 		{
 			if (!(buf->content) || *(buf->content) == '\0')
 			{
 				prev->next = buf->next;
-				ft_strdel(&(buf->content);
+				ft_strdel(&(buf->content));
 				free(buf);
-				buf == NULL;
+				buf = NULL;
 			}
 			else
 			{

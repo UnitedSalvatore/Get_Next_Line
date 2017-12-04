@@ -20,26 +20,34 @@ static void			check_empty(const char fd, t_list_fd **list)
 	t_list_fd	*prev;
 	t_list_fd	*buf;
 
-	if ((*list)->fd == fd)
+	buf = NULL;
+	if ((*list)->fd = fd)
 	{
-		buf = *list;
-		*list = (*list)->next;
+		if (!((*list)->content) || *((*list)->content) == '\0')
+		{
+			buf = *list;
+			*list = (*list)->next;
+		}
 	}
 	else
 	{
-		prev = NULL;
-		buf = *list;
-		while (buf->fd != fd)
+		prev = *list;
+		buf = *list->next;
+		while (buf)
 		{
-			prev = buf;
-			buf = buf->next;
+			if (!(buf->content) || *(buf->content) == '\0')
+			{
+				prev->next = buf->next;
+				ft_strdel(&(buf->content);
+				free(buf);
+				buf == NULL;
+			}
+			else
+			{
+				prev = buf;
+				buf = buf->next;
+			}
 		}
-		prev->next = buf->next;
-	}
-	if (!(buf->content) || *(buf->content) == '\0')
-	{
-		ft_strdel(&(buf->content));
-		free(buf);
 	}
 }
 

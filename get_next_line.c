@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-static void			check_empty(const char fd, t_list_fd **list)
+static void			del_node(const char fd, t_list_fd **list, t_list_fd *curr)
 {
 	t_list_fd	*prev;
 	t_list_fd	*buf;
@@ -60,19 +60,18 @@ static int			get_line(t_list_fd *curr, char **line)
 	{
 		if (!(ptr = ft_strchr(curr->content, '\n')))
 		{
-			if (!(*line = ft_strdup(curr->content)))
-				return (-1);
+			MALLCHECK(*(*line = ft_strdup(curr->content)));
 			ft_strdel(&(curr->content));
+			MALLCHECK(curr->content);
 		}
 		else
 		{
-			if (!(*line = ft_strsub(curr->content, 0, ptr - curr->content)))
-				return (-1);
+			MALLCKECK(*(*line = ft_strsub(curr->content, 0, \
+			ptr - curr->content)));
 			buf = curr->content;
 			curr->content = ft_strdup(ptr + 1);
 			ft_strdel(&buf);
-			if (!(curr->content))
-				return (-1);
+			MALLCHECK(curr->content);
 		}
 		return (1);
 	}
@@ -135,6 +134,7 @@ int					get_next_line(const int fd, char **line)
 		return (-1);
 	if ((ret = get_line(current, line)) == -1)
 		return (-1);
-	check_empty(fd, &list);
+	if (current->content == NULL || *(current->content) == '\0')
+		del_node(fd, &list, current);
 	return ((ret > 0) ? 1 : 0);
 }

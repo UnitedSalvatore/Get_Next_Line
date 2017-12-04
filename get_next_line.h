@@ -15,6 +15,8 @@
 
 # define BUFF_SIZE 64
 
+# define MALLCHECK(ptr) if (!ptr) return (-1);
+
 typedef struct			s_list_fd
 {
 	int					fd;

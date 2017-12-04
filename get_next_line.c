@@ -6,39 +6,79 @@
 /*   By: ypikul <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/26 04:32:10 by ypikul            #+#    #+#             */
-/*   Updated: 2017/11/30 16:48:46 by ypikul           ###   ########.fr       */
+/*   Updated: 2017/12/04 12:31:05 by ypikul           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include "libft.h"
+#include "libft/libft.h"
+#include <unistd.h>
+#include <stdlib.h>
 
-static void			get_line(t_list_fd *curr, char **line)
+static void			check_empty(const char fd, t_list_fd **list)
+{
+	t_list_fd	*prev;
+	t_list_fd	*buf;
+
+	if ((*list)->fd == fd)
+	{
+		buf = *list;
+		*list = (*list)->next;
+	}
+	else
+	{
+		prev = NULL;
+		buf = *list;
+		while (buf->fd != fd)
+		{
+			prev = buf;
+			buf = buf->next;
+		}
+		prev->next = buf->next;
+	}
+	if (!(buf->content) || *(buf->content) == '\0')
+	{
+		ft_strdel(&(buf->content));
+		free(buf);
+	}
+}
+
+static int			get_line(t_list_fd *curr, char **line)
 {
 	char	*ptr;
+	char	*buf;
 
 	if (curr->content && *(curr->content) != '\0')
 	{
-		if (!(ptr = ft_strchr(curr->content, '\n')) && \
-				!(*line = ft_strdup(curr->content)))
-			return ;
+		if (!(ptr = ft_strchr(curr->content, '\n')))
+		{
+			if (!(*line = ft_strdup(curr->content)))
+				return (-1);
+			ft_strdel(&(curr->content));
+		}
 		else
+		{
 			if (!(*line = ft_strsub(curr->content, 0, ptr - curr->content)))
-				return ;
-		if
+				return (-1);
+			buf = curr->content;
+			curr->content = ft_strdup(ptr + 1);
+			ft_strdel(&buf);
+			if (!(curr->content))
+				return (-1);
+		}
+		return (1);
 	}
-	else
-		*line = NULL;
+	return (0);
 }
 
-static *t_list_fd	*read_file(const int fd, t_list *current)
+static t_list_fd	*read_file(const int fd, t_list_fd *current)
 {
-	char	*buf[BUFF_SIZE + 1];
+	char	buf[BUFF_SIZE + 1];
 	char	*str;
 	int		ret;
 
 	while (!(ft_strchr(current->content, '\n')) \
-			&& (ret = read(fd, buf, BUFFSIZE)) > 0)
+			&& (ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
 		str = current->content;
@@ -50,7 +90,7 @@ static *t_list_fd	*read_file(const int fd, t_list *current)
 	return (current);
 }
 
-static *t_list_fd	*get_current_fd(const int fd, t_list **list)
+static t_list_fd	*get_current_fd(const int fd, t_list_fd **list)
 {
 	t_list_fd	*current;
 
@@ -64,7 +104,7 @@ static *t_list_fd	*get_current_fd(const int fd, t_list **list)
 	if (!(current = malloc(sizeof(*current))))
 		return (NULL);
 	current->fd = fd;
-	if (!(current->content = ft_strdup('\0')))
+	if (!(current->content = ft_strdup("\0")))
 	{
 		free(current);
 		return (NULL);
@@ -78,12 +118,15 @@ int					get_next_line(const int fd, char **line)
 {
 	static t_list_fd	*list;
 	t_list_fd			*current;
+	int					ret;
 
-	if (fd < 0 || !line || BUFF_SIZE < 1 || read(fd, buf, 0) < 0)
+	if (fd < 0 || !line || BUFF_SIZE < 1 || read(fd, "", 0) < 0)
 		return (-1);
 	if (!(current = get_current_fd(fd, &list)) || \
-			!read_file(fd, current))
+			!(read_file(fd, current)))
 		return (-1);
-	get_line(current, line);
-	return ();
+	if ((ret = get_line(current, line)) == -1)
+		return (-1);
+	check_empty(fd, &list);
+	return ((ret > 0) ? 1 : 0);
 }

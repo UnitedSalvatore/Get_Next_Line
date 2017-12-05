@@ -15,41 +15,12 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+/*
 static void			del_node(const char fd, t_list_fd **list, t_list_fd *curr)
 {
-	t_list_fd	*prev;
-	t_list_fd	*buf;
 
-	buf = NULL;
-	if ((*list)->fd == fd)
-	{
-		if (!((*list)->content) || *((*list)->content) == '\0')
-		{
-			buf = *list;
-			*list = (*list)->next;
-		}
-	}
-	else
-	{
-		prev = *list;
-		buf = (*list)->next;
-		while (buf)
-		{
-			if (!(buf->content) || *(buf->content) == '\0')
-			{
-				prev->next = buf->next;
-				ft_strdel(&(buf->content));
-				free(buf);
-				buf = NULL;
-			}
-			else
-			{
-				prev = buf;
-				buf = buf->next;
-			}
-		}
-	}
 }
+*/
 
 static int			get_line(t_list_fd *curr, char **line)
 {
@@ -66,7 +37,7 @@ static int			get_line(t_list_fd *curr, char **line)
 		}
 		else
 		{
-			MALLCKECK(*(*line = ft_strsub(curr->content, 0, \
+			MALLCHECK(*(*line = ft_strsub(curr->content, 0, \
 			ptr - curr->content)));
 			buf = curr->content;
 			curr->content = ft_strdup(ptr + 1);
@@ -134,7 +105,7 @@ int					get_next_line(const int fd, char **line)
 		return (-1);
 	if ((ret = get_line(current, line)) == -1)
 		return (-1);
-	if (current->content == NULL || *(current->content) == '\0')
-		del_node(fd, &list, current);
+//	if (current->content == NULL || *(current->content) == '\0')
+//		del_node(fd, &list, current);
 	return ((ret > 0) ? 1 : 0);
 }

@@ -6,14 +6,14 @@
 /*   By: ypikul <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 05:50:53 by ypikul            #+#    #+#             */
-/*   Updated: 2017/12/06 06:41:52 by ypikul           ###   ########.fr       */
+/*   Updated: 2017/12/06 06:49:12 by ypikul           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
-#include "libft.h"
+#include "libft/libft.h"
 #include "get_next_line.h"
 
 static void	ft_puterr(const char *msg)

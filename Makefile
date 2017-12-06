@@ -1,5 +1,5 @@
 NAME = get_next_line
-LIB = libft/libft.a
+LIB = libft.a
 
 FILENAMES = get_next_line.c \
 			main.c
@@ -9,8 +9,8 @@ SOURCES = $(addprefix ./, $(FILENAMES))
 OBJECTS = $(addprefix ./obj/, $(FILENAMES:.c=.o))
 
 CC = gcc
-FLAGS ?= -Wall -Wextra -Werror -g
-FLAGS += -I./src/ -I./libft/
+FLAGS ?= -Wall -Wextra -Werror
+FLAGS += -I./
 
 all: $(NAME)
 

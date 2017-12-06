@@ -1,4 +1,4 @@
-NAME = libft.a
+NAME = ../libft.a
 
 FILENAMES = ft_memset.c \
 			ft_bzero.c \

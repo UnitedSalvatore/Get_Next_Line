@@ -6,7 +6,7 @@
 /*   By: ypikul <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 02:27:41 by ypikul            #+#    #+#             */
-/*   Updated: 2017/10/25 02:27:43 by ypikul           ###   ########.fr       */
+/*   Updated: 2017/12/06 06:30:37 by ypikul           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 
 void	ft_putendl(char const *s)
 {
-	if (s && *s)
+	if (s)
 	{
-		write(STDOUT_FILENO, s, ft_strlen(s));
+		if (*s)
+			write(STDOUT_FILENO, s, ft_strlen(s));
 		write(STDOUT_FILENO, "\n", 1);
 	}
 }

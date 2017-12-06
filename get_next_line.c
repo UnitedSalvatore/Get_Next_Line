@@ -6,7 +6,7 @@
 /*   By: ypikul <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/26 04:32:10 by ypikul            #+#    #+#             */
-/*   Updated: 2017/12/04 12:31:05 by ypikul           ###   ########.fr       */
+/*   Updated: 2017/12/06 02:05:08 by ypikul           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,23 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-/*
-static void			del_node(const char fd, t_list_fd **list, t_list_fd *curr)
+static void			del_node(t_list_fd **list, t_list_fd *curr)
 {
+	t_list_fd	*buf;
 
+	if (*list == curr)
+		*list = (*list)->next;
+	else
+	{
+		buf = *list;
+		while (buf->next != curr)
+			buf = buf->next;
+		buf->next = buf->next->next;
+	}
+	if (curr->content)
+		ft_strdel(&(curr->content));
+	free(curr);
 }
-*/
 
 static int			get_line(t_list_fd *curr, char **line)
 {
@@ -31,14 +42,13 @@ static int			get_line(t_list_fd *curr, char **line)
 	{
 		if (!(ptr = ft_strchr(curr->content, '\n')))
 		{
-			MALLCHECK(*(*line = ft_strdup(curr->content)));
+			MALLCHECK((*line = ft_strdup(curr->content)));
 			ft_strdel(&(curr->content));
-			MALLCHECK(curr->content);
 		}
 		else
 		{
-			MALLCHECK(*(*line = ft_strsub(curr->content, 0, \
-			ptr - curr->content)));
+			MALLCHECK((*line = ft_strsub(curr->content, 0, \
+							ptr - curr->content)));
 			buf = curr->content;
 			curr->content = ft_strdup(ptr + 1);
 			ft_strdel(&buf);
@@ -105,7 +115,7 @@ int					get_next_line(const int fd, char **line)
 		return (-1);
 	if ((ret = get_line(current, line)) == -1)
 		return (-1);
-//	if (current->content == NULL || *(current->content) == '\0')
-//		del_node(fd, &list, current);
+	if (current->content == NULL || *(current->content) == '\0')
+		del_node(&list, current);
 	return ((ret > 0) ? 1 : 0);
 }

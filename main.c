@@ -6,7 +6,7 @@
 /*   By: ypikul <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 05:50:53 by ypikul            #+#    #+#             */
-/*   Updated: 2017/12/06 06:49:12 by ypikul           ###   ########.fr       */
+/*   Updated: 2017/12/08 17:03:33 by ypikul           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ int			main(int ac, char **av)
 				ret = get_next_line(files[i], &line);
 				if (ret == 1)
 				{
-					ft_putendl(line);
+				//	ft_putendl(line);
+					write(STDOUT_FILENO, line, BUFF_SIZE + 3);
 					ft_strdel(&line);
 				}
 				else if (ret == 0)

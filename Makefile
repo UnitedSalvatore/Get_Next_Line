@@ -9,7 +9,7 @@ SOURCES = $(addprefix ./, $(FILENAMES))
 OBJECTS = $(addprefix ./obj/, $(FILENAMES:.c=.o))
 
 CC = gcc
-FLAGS ?= -Wall -Wextra -Werror
+FLAGS ?= -Wall -Wextra -Werror -g
 FLAGS += -I./
 
 all: $(NAME)

@@ -6,7 +6,7 @@
 /*   By: ypikul <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/06 05:50:53 by ypikul            #+#    #+#             */
-/*   Updated: 2017/12/08 17:03:33 by ypikul           ###   ########.fr       */
+/*   Updated: 2017/12/08 19:29:49 by ypikul           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +48,32 @@ int			main(int ac, char **av)
 				ret = get_next_line(files[i], &line);
 				if (ret == 1)
 				{
-				//	ft_putendl(line);
-					write(STDOUT_FILENO, line, BUFF_SIZE + 3);
+					ft_putnbr(num_of_repeat);
+					ft_putstr(": ");
+					ft_putendl(line);
 					ft_strdel(&line);
 				}
 				else if (ret == 0)
 				{
+					ft_putnbr(num_of_repeat);
+					ft_putstr(": ");
 					ft_putstr("The end of the file was reached: ");
 					ft_putendl(av[i + 2]);
 				}
 				else if (ret == -1)
 				{
+					ft_putnbr(num_of_repeat);
+					ft_putstr(": ");
 					ft_putstr_fd("Error while reading file: ", STDERR_FILENO);
 					ft_putendl_fd(av[i + 2], STDERR_FILENO);
 				}
 				i++;
 			}
 		}
+		i = 1;
+		while (++i < ac)
+			close(files[i - 2]);
+		free(files);
 		return (0);
 	}
 	return (1);

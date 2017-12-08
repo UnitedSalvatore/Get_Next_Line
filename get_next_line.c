@@ -43,13 +43,20 @@ static int			get_line(t_list_fd *curr, char **line)
 	if (!(ptr = ft_memchr(curr->content, '\n', curr->size)))
 	{
 		MALLCHECK((*line = malloc(curr->size + 1)));
+		ft_memcpy(*line, curr->content, curr->size + 1);
 		ft_strdel(&(curr->content));
 	}
 	else
 	{
-
+		MALLCHECK((*line = ft_memalloc(ptr - curr->content + 1)));
+		ft_memcpy(*line, curr->content, ptr - curr->content);
+		curr->size -= (++ptr - curr->content);
+		buf = curr->content;
+		MALLCHECK((curr->content = ft_memalloc(curr->size + 1)));
+		ft_memcpy(curr->content, ptr, curr->size);
+		ft_strdel(&buf);
 	}
-	return (1);	
+	return (1);
 }
 
 static t_list_fd	*read_file(const int fd, t_list_fd *current)

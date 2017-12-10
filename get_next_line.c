@@ -114,11 +114,15 @@ int					get_next_line(const int fd, char **line)
 	t_list_fd			*current;
 	int					ret;
 
-	if (fd < 0 || !line || BUFF_SIZE < 1 || read(fd, "", 0) < 0)
+	if (fd < 0 || !line || BUFF_SIZE < 1)
 		return (-1);
-	if (!(current = get_current_fd(fd, &list)) || \
-			!(read_file(fd, current)))
+	if (!(current = get_current_fd(fd, &list)))
 		return (-1);
+	if (read(fd, "", 0) < 0 || !(read_file(fd, current)))
+	{
+		del_node(&list, current);
+		return (-1);
+	}
 	if ((ret = get_line(current, line)) == -1)
 		return (-1);
 	if (current->size == 0 || !(current->content))

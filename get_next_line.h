@@ -6,7 +6,7 @@
 /*   By: ypikul <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/26 04:35:01 by ypikul            #+#    #+#             */
-/*   Updated: 2017/12/08 17:12:02 by ypikul           ###   ########.fr       */
+/*   Updated: 2017/12/10 17:24:26 by ypikul           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <string.h>
 
-# define BUFF_SIZE 16
+# define BUFF_SIZE 64
 
 # define MALLCHECK(ptr) if (!ptr) return (-1)
 

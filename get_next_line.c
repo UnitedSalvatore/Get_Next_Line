@@ -6,7 +6,7 @@
 /*   By: ypikul <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/26 04:32:10 by ypikul            #+#    #+#             */
-/*   Updated: 2017/12/06 02:05:08 by ypikul           ###   ########.fr       */
+/*   Updated: 2017/12/14 20:30:22 by ypikul           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,8 @@ static int			get_line(t_list_fd *curr, char **line)
 		return (0);
 	if (!(ptr = ft_memchr(curr->content, '\n', curr->size)))
 	{
-		MALLCHECK((*line = malloc(curr->size + 1)));
-		ft_memcpy(*line, curr->content, curr->size + 1);
-		ft_strdel(&(curr->content));
+		*line = curr->content;
+		curr->content = NULL;
 	}
 	else
 	{

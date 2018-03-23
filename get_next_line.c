@@ -6,7 +6,7 @@
 /*   By: ypikul <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/26 04:32:10 by ypikul            #+#    #+#             */
-/*   Updated: 2017/12/06 02:05:08 by ypikul           ###   ########.fr       */
+/*   Updated: 2017/12/14 20:30:22 by ypikul           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,25 +38,24 @@ static int			get_line(t_list_fd *curr, char **line)
 	char	*ptr;
 	char	*buf;
 
-	if (curr->content && *(curr->content) != '\0')
+	if (curr->size == 0)
+		return (0);
+	if (!(ptr = ft_memchr(curr->content, '\n', curr->size)))
 	{
-		if (!(ptr = ft_strchr(curr->content, '\n')))
-		{
-			MALLCHECK((*line = ft_strdup(curr->content)));
-			ft_strdel(&(curr->content));
-		}
-		else
-		{
-			MALLCHECK((*line = ft_strsub(curr->content, 0, \
-							ptr - curr->content)));
-			buf = curr->content;
-			curr->content = ft_strdup(ptr + 1);
-			ft_strdel(&buf);
-			MALLCHECK(curr->content);
-		}
-		return (1);
+		*line = curr->content;
+		curr->content = NULL;
 	}
-	return (0);
+	else
+	{
+		MALLCHECK((*line = ft_memalloc(ptr - curr->content + 1)));
+		ft_memcpy(*line, curr->content, ptr - curr->content);
+		curr->size -= (++ptr - curr->content);
+		buf = curr->content;
+		MALLCHECK((curr->content = ft_memalloc(curr->size + 1)));
+		ft_memcpy(curr->content, ptr, curr->size);
+		ft_strdel(&buf);
+	}
+	return (1);
 }
 
 static t_list_fd	*read_file(const int fd, t_list_fd *current)
@@ -65,15 +64,20 @@ static t_list_fd	*read_file(const int fd, t_list_fd *current)
 	char	*str;
 	int		ret;
 
-	while (!(ft_strchr(current->content, '\n')) \
+	while (!(ft_memchr(current->content, '\n', current->size)) \
 			&& (ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
 		str = current->content;
-		current->content = ft_strjoin(current->content, buf);
-		ft_strdel(&str);
-		if (!(current->content))
+		if (!(current->content = malloc(current->size + ret + 1)))
+		{
+			ft_strdel(&str);
 			return (NULL);
+		}
+		ft_memcpy(current->content, str, current->size);
+		ft_memcpy(current->content + current->size, buf, ret + 1);
+		current->size += ret;
+		ft_strdel(&str);
 	}
 	return (current);
 }
@@ -97,6 +101,7 @@ static t_list_fd	*get_current_fd(const int fd, t_list_fd **list)
 		free(current);
 		return (NULL);
 	}
+	current->size = 0;
 	current->next = *list;
 	*list = current;
 	return (current);
@@ -108,14 +113,18 @@ int					get_next_line(const int fd, char **line)
 	t_list_fd			*current;
 	int					ret;
 
-	if (fd < 0 || !line || BUFF_SIZE < 1 || read(fd, "", 0) < 0)
+	if (fd < 0 || !line || BUFF_SIZE < 1)
 		return (-1);
-	if (!(current = get_current_fd(fd, &list)) || \
-			!(read_file(fd, current)))
+	if (!(current = get_current_fd(fd, &list)))
 		return (-1);
+	if (read(fd, "", 0) < 0 || !(read_file(fd, current)))
+	{
+		del_node(&list, current);
+		return (-1);
+	}
 	if ((ret = get_line(current, line)) == -1)
 		return (-1);
-	if (current->content == NULL || *(current->content) == '\0')
+	if (current->size == 0 || !(current->content))
 		del_node(&list, current);
 	return ((ret > 0) ? 1 : 0);
 }
